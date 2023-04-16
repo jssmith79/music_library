@@ -7,6 +7,7 @@ function ArtistView() {
     const { id } = useParams()
     const [ artistData, setArtistData ] = useState([]);
 
+ 
     return (
         <div>
             <h2>The ID that passed was: { id }</h2>
