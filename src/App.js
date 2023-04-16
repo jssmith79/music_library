@@ -31,10 +31,12 @@ function App() {
   return (
     <div className="App">
 
-      <SearchBar setSearch={setSearch} />
       {message}
-      <DataContext.Provider value={data}>
+      <DataContext.Provider value={{ data, setSearch }}>
+
+        <SearchBar />
         <Gallery />
+
       </DataContext.Provider>
     </div>
   );
