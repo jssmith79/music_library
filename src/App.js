@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createResource as fetchData } from './helper';
 
 import SearchBar from './components/SearchBar';
 import Gallery from './components/Gallery';
@@ -17,6 +18,15 @@ function App() {
   let [data, setData] = useState([]);
   let searchInput = useRef('')
 
+  const renderGallery = () => {
+    if(data) {
+      return (
+        <Suspense fallback={<Spinner />}>
+          <Gallery data={data} />
+        </Suspense>
+      )
+    }
+  }
 
 
   const handleSearch = async searchTerms => {
@@ -31,7 +41,13 @@ function App() {
       setMessage('Not Found')
     }
     console.log(resData)
+    useEffect(() => {
+      if (searchTerms) {
+        setData(fetchData(searchTerm))
+      }
+    }, [searchTerm])
 
+    let [data, setData] = useState(null)
 
   }
 
@@ -39,6 +55,7 @@ function App() {
   return (
     <div className="App">
       {message}
+      {renderGallery()}
       <Router>
 
         <Routes>
@@ -49,8 +66,9 @@ function App() {
               </SearchContext.Provider>
               <DataContext.Provider value={{ data }}>
 
-
-                <Gallery />
+                <Suspense fallback={<h1>Loading...Please wait...</h1>}>
+                  <Gallery />
+                </Suspense>
 
               </DataContext.Provider>
             </>
